@@ -20,6 +20,11 @@ else
     echo "Superuser 'admin' already exists"
 fi
 
-# Run the server
-echo "Starting Django development server..."
-python manage.py runserver 0.0.0.0:8000
+# Check if we're in development or production mode
+if [ "$ENVIRONMENT" = "production" ]; then
+    echo "Starting Django server with Gunicorn (production mode)..."
+    gunicorn -c gunicorn_config.py secure_cipher_bank.wsgi:application
+else
+    echo "Starting Django development server..."
+    python manage.py runserver 0.0.0.0:8000
+fi
